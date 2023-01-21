@@ -37,11 +37,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  0001888c  00000000  00000000  00021a00  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00001e98  00000000  00000000  0003a28c  2**0
+ 17 .debug_line   00001e99  00000000  00000000  0003a28c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00096a55  00000000  00000000  0003c124  2**0
+ 18 .debug_str    00096a55  00000000  00000000  0003c125  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  000d2b79  2**0
+ 19 .comment      00000050  00000000  00000000  000d2b7a  2**0
                   CONTENTS, READONLY
  20 .debug_frame  00000460  00000000  00000000  000d2bcc  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -86,7 +86,7 @@ Disassembly of section .text:
 							{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0},
 							{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0}};
 
-
+// Function to enable clock for GPIOA and GPIOC
 void ClockConfig()
 {
  8000104:	b580      	push	{r7, lr}
@@ -117,11 +117,13 @@ void ClockConfig()
 
 08000130 <PinConfig>:
 
+// Function to configure the IO pins
 void PinConfig()
 {
  8000130:	b580      	push	{r7, lr}
  8000132:	af00      	add	r7, sp, #0
-	GPIOA->MODER |= (1 << 8) | (1 << 10) | (1 << 12) | (1 << 14) | (1 << 16) | (1 << 18) | (1 << 20) | (1 << 22) | (1 << 24); // Set PA4 to PA12 as output
+	// Set PA4 to PA12 as output
+	GPIOA->MODER |= (1 << 8) | (1 << 10) | (1 << 12) | (1 << 14) | (1 << 16) | (1 << 18) | (1 << 20) | (1 << 22) | (1 << 24);
  8000134:	2390      	movs	r3, #144	; 0x90
  8000136:	05db      	lsls	r3, r3, #23
  8000138:	681a      	ldr	r2, [r3, #0]
@@ -131,6 +133,7 @@ void PinConfig()
  8000140:	430a      	orrs	r2, r1
  8000142:	601a      	str	r2, [r3, #0]
 
+	// Set PC13 as input
 	GPIOC->MODER &= ~GPIO_MODER_MODER13; // Clear mode register for PC13
  8000144:	4b08      	ldr	r3, [pc, #32]	; (8000168 <PinConfig+0x38>)
  8000146:	681a      	ldr	r2, [r3, #0]
@@ -156,6 +159,7 @@ void PinConfig()
 
 08000170 <Delay>:
 
+// Function to add a delay
 void Delay(int delay)
 {
  8000170:	b580      	push	{r7, lr}
@@ -186,7 +190,7 @@ void Delay(int delay)
 
 08000198 <MemoryWritePortA>:
 
-
+// Function that takes a 16 bit array and sets the GPIOA output pins according to the "0" and "1" states
 void MemoryWritePortA(int two_bytes[16])
 {
  8000198:	b580      	push	{r7, lr}
@@ -245,91 +249,93 @@ void MemoryWritePortA(int two_bytes[16])
 
 080001e4 <main>:
 
-int main(void) {
+
+int main(void)
+{
  80001e4:	b580      	push	{r7, lr}
  80001e6:	b082      	sub	sp, #8
  80001e8:	af00      	add	r7, sp, #0
-
-ClockConfig();
+	// Configure clock and IO pins
+	ClockConfig();
  80001ea:	f7ff ff8b 	bl	8000104 <ClockConfig>
-PinConfig();
+	PinConfig();
  80001ee:	f7ff ff9f 	bl	8000130 <PinConfig>
-int position = 0;
+	int position = 0; // Stores the current position of "led_position" array
  80001f2:	2300      	movs	r3, #0
  80001f4:	607b      	str	r3, [r7, #4]
 
-
-  while (1)
-  {
-
-  	if (GPIOC->IDR & GPIO_IDR_13)
+	while (1)
+	{
+		// If button at PC13 is pressed, cycle in one direction
+		if (GPIOC->IDR & GPIO_IDR_13)
  80001f6:	4b18      	ldr	r3, [pc, #96]	; (8000258 <main+0x74>)
  80001f8:	691a      	ldr	r2, [r3, #16]
  80001fa:	2380      	movs	r3, #128	; 0x80
  80001fc:	019b      	lsls	r3, r3, #6
  80001fe:	4013      	ands	r3, r2
  8000200:	d014      	beq.n	800022c <main+0x48>
-  	{
-  		if (position < 18)
+		{
+			if (position < 18)
  8000202:	687b      	ldr	r3, [r7, #4]
  8000204:	2b11      	cmp	r3, #17
  8000206:	dc0e      	bgt.n	8000226 <main+0x42>
-  		{
-  			MemoryWritePortA(led_position[position]);
+			{
+				MemoryWritePortA(led_position[position]);
  8000208:	687b      	ldr	r3, [r7, #4]
  800020a:	019a      	lsls	r2, r3, #6
  800020c:	4b13      	ldr	r3, [pc, #76]	; (800025c <main+0x78>)
  800020e:	18d3      	adds	r3, r2, r3
  8000210:	0018      	movs	r0, r3
  8000212:	f7ff ffc1 	bl	8000198 <MemoryWritePortA>
-  			Delay(50000);
+				Delay(50000);
  8000216:	4b12      	ldr	r3, [pc, #72]	; (8000260 <main+0x7c>)
  8000218:	0018      	movs	r0, r3
  800021a:	f7ff ffa9 	bl	8000170 <Delay>
-  			position++;
+				position++;
  800021e:	687b      	ldr	r3, [r7, #4]
  8000220:	3301      	adds	r3, #1
  8000222:	607b      	str	r3, [r7, #4]
  8000224:	e7e7      	b.n	80001f6 <main+0x12>
-  		}
-  		else
-  		{
-  			position = 0;
+			}
+			else
+			{
+				position = 0; // Reset position to the beginning of the array
  8000226:	2300      	movs	r3, #0
  8000228:	607b      	str	r3, [r7, #4]
  800022a:	e7e4      	b.n	80001f6 <main+0x12>
-  		}
-  	}
-  	else
-  	{
-  		if (position > 0)
+			}
+		}
+		// If button at PC13 is not pressed, cycle in the other direction
+		else
+		{
+			if (position > 0)
  800022c:	687b      	ldr	r3, [r7, #4]
  800022e:	2b00      	cmp	r3, #0
  8000230:	dd0e      	ble.n	8000250 <main+0x6c>
-  		{
-  			MemoryWritePortA(led_position[position]);
+			{
+				MemoryWritePortA(led_position[position]);
  8000232:	687b      	ldr	r3, [r7, #4]
  8000234:	019a      	lsls	r2, r3, #6
  8000236:	4b09      	ldr	r3, [pc, #36]	; (800025c <main+0x78>)
  8000238:	18d3      	adds	r3, r2, r3
  800023a:	0018      	movs	r0, r3
  800023c:	f7ff ffac 	bl	8000198 <MemoryWritePortA>
-  			Delay(50000);
+				Delay(50000);
  8000240:	4b07      	ldr	r3, [pc, #28]	; (8000260 <main+0x7c>)
  8000242:	0018      	movs	r0, r3
  8000244:	f7ff ff94 	bl	8000170 <Delay>
-  			position--;
+				position--;
  8000248:	687b      	ldr	r3, [r7, #4]
  800024a:	3b01      	subs	r3, #1
  800024c:	607b      	str	r3, [r7, #4]
  800024e:	e7d2      	b.n	80001f6 <main+0x12>
-  		}
-  		else
-  		{
-  			position = 17;
+			}
+			else
+			{
+				position = 17; // Reset position to the end of the array
  8000250:	2311      	movs	r3, #17
  8000252:	607b      	str	r3, [r7, #4]
-  	if (GPIOC->IDR & GPIO_IDR_13)
+		if (GPIOC->IDR & GPIO_IDR_13)
  8000254:	e7cf      	b.n	80001f6 <main+0x12>
  8000256:	46c0      	nop			; (mov r8, r8)
  8000258:	48000800 	.word	0x48000800

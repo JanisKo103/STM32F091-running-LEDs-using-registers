@@ -2531,12 +2531,12 @@ LOAD d:/st/stm32cubeide_1.11.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_macro   0x0000000000018534      0x19a ./Core/Src/system_stm32f0xx.o
  .debug_macro   0x00000000000186ce      0x1be ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
 
-.debug_line     0x0000000000000000     0x1e98
- .debug_line    0x0000000000000000      0x736 ./Core/Src/main.o
- .debug_line    0x0000000000000736      0x6e0 ./Core/Src/stm32f0xx_it.o
- .debug_line    0x0000000000000e16      0x703 ./Core/Src/system_stm32f0xx.o
- .debug_line    0x0000000000001519       0x89 ./Core/Startup/startup_stm32f091rctx.o
- .debug_line    0x00000000000015a2      0x8f6 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
+.debug_line     0x0000000000000000     0x1e99
+ .debug_line    0x0000000000000000      0x737 ./Core/Src/main.o
+ .debug_line    0x0000000000000737      0x6e0 ./Core/Src/stm32f0xx_it.o
+ .debug_line    0x0000000000000e17      0x703 ./Core/Src/system_stm32f0xx.o
+ .debug_line    0x000000000000151a       0x89 ./Core/Startup/startup_stm32f091rctx.o
+ .debug_line    0x00000000000015a3      0x8f6 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
 
 .debug_str      0x0000000000000000    0x96a55
  .debug_str     0x0000000000000000    0x963b6 ./Core/Src/main.o
