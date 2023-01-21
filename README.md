@@ -1,5 +1,5 @@
 # STM32F091RC running LEDs using registers
-<b>This is an STM32Cube IDE project for running LEDs using registers for STM32F091RC MCU.</b>
+<b>This is an STM32CubeIDE project for running LEDs using registers for STM32F091RC MCU.</b>
 
 This is a low level C program for STM32F091RC microcontroller. Nine LEDs are connected from PA4 to PA12. A push button is connected to PC13. When the button is pressed, the LEDs are moving (turning ON and OFF) in one direction. When the button is released, the LEDs are moving in the other direction from where they left.
 
